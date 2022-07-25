@@ -30,6 +30,8 @@ public class Answer {
     private SiteUser author;
 
     private LocalDateTime modifyDate;
+
+    private Integer likeCnt;
 }
 
 @Converter

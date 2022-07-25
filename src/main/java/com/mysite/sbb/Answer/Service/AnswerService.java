@@ -5,9 +5,11 @@ import com.mysite.sbb.Answer.vo.Answer;
 import com.mysite.sbb.Question.dao.QuestionRepository;
 import com.mysite.sbb.Question.vo.Question;
 import com.mysite.sbb.User.SiteUser;
+import com.mysite.sbb.Util.DataNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class AnswerService {
@@ -19,7 +21,7 @@ public class AnswerService {
     }
 
     //answer 생성
-    public void create(Question question, String content, SiteUser author){
+    public Answer create(Question question, String content, SiteUser author){
         Answer answer = new Answer();
         answer.setContent(content);
         answer.setCreateDate(LocalDateTime.now());
@@ -27,17 +29,43 @@ public class AnswerService {
         answer.setQuestion(question);
         answer.setAuthor(author);
         answer.setAnswerLike(false);
+        answer.setLikeCnt(0);
+        question.setViewCount(question.getViewCount()-1);
+        questionRepository.save(question);
+        answerRepository.save(answer);
+        return answer;
+    }
+
+    //좋아요
+    public void setLike(Integer answerId,Integer questionId){
+        Answer answer = answerRepository.findById(answerId).get();
+        answer.setAnswerLike(!answer.getAnswerLike());
+        if(answer.getAnswerLike()){
+            answer.setLikeCnt(answer.getLikeCnt()+1);
+        }
+        else{
+            answer.setLikeCnt(answer.getLikeCnt()-1);
+        }
+        Question question = questionRepository.findById(questionId).get();
         question.setViewCount(question.getViewCount()-1);
         questionRepository.save(question);
         answerRepository.save(answer);
     }
 
-    public void setLike(Integer answerId,Integer questionId){
-        Answer answer = answerRepository.findById(answerId).get();
-        answer.setAnswerLike(!answer.getAnswerLike());
-        Question question = questionRepository.findById(questionId).get();
-        question.setViewCount(question.getViewCount()-1);
-        questionRepository.save(question);
-        answerRepository.save(answer);
+    //답변 조회
+    public Answer getAnswer(Integer id){
+        Optional<Answer> answer = this.answerRepository.findById(id);
+        if(answer.isPresent()){
+            return answer.get();
+        } else{
+            throw new DataNotFoundException("answer not found");
+        }
+    }
+
+    //답변 수정
+    public void modify(Answer answer, String content){
+        answer.setContent(content);
+        answer.setModifyDate(LocalDateTime.now());
+        this.answerRepository.save(answer);
     }
 }
