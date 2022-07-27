@@ -1,5 +1,5 @@
 <html layout:decorate="~{layout}">
-<div layout:fragment="content" class="container my-3 text-white text-bold box-width-30">
+<div layout:fragment="content" class="container my-3 text-bold box-width-30">
     <div class="my-3 border-bottom">
         <div>
             <h1>회원가입</h1>
@@ -11,6 +11,12 @@
             <label form="username" class="form-label">사용자ID</label>
             <input type="text" th:field="*{username}" class="form-control">
         </div>
+
+        <div class="mb-3">
+            <label form="nickname" class="form-label">닉네임</label>
+            <input type="text" th:field="*{nickname}" class="form-control">
+        </div>
+
         <div class="mb-3">
             <label form="password" class="form-label">비밀번호</label>
             <input type="password" th:field="*{password1}" class="form-control">

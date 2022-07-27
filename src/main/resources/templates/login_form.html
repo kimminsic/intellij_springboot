@@ -1,5 +1,5 @@
 <html layout:decorate="~{layout}">
-<div layout:fragment="content" class="container my-3 box-width-30 text-white text-bold">
+<div layout:fragment="content" class="container my-3 box-width-30 text-bold">
     <form th:action="@{/user/login}" method="post">
         <div th:if="${param.error}">
             <div class="alert alert-danger">
